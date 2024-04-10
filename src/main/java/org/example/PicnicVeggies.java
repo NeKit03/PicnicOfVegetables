@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 public class PicnicVeggies {
 
@@ -45,14 +47,26 @@ public class PicnicVeggies {
                 maxWorldName=entry.getKey();
             }
         }
-        return maxWorldName;
+        return "Самое длинное слово: "+maxWorldName;
     }
 
     public void wordFrequencyAnalysis(){
-        for (Map.Entry<String, Integer> entry : wordFrequency.entrySet()) {
+        for (Map.Entry<String, Integer> entry : sortByValueDesc(wordFrequency).entrySet()) {
+        //for (Map.Entry<String, Integer> entry : wordFrequency.entrySet()) {
             System.out.printf("Слово %s встречается %d раз\n",entry.getKey(),entry.getValue());
         }
     }
 
+    private static Map<String, Integer> sortByValueDesc(Map<String, Integer> unsortedMap) {
+        return unsortedMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue((v1, v2) -> v2.compareTo(v1)))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
 
 }
